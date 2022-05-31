@@ -1,177 +1,142 @@
 <template>
-  <div v-for="reply in replies" :key="reply.id" class="chat__box">
-    <div class="chat__box--counter">
-      <div class="chat__box--counter-item">
-        <img
-          src="@/assets/images/icon-plus.svg"
-          alt="icon"
-          class=""
-          @click="increaseCount(reply.id)"
-        />
-        <p class="count">{{ reply.score }}</p>
-        <img
-          src="@/assets/images/icon-minus.svg"
-          alt="icon"
-          @click="decreaseCount(reply.id)"
-        />
-      </div>
-      <div class="reply-mobile">
-        <img src="@/assets/images/icon-reply.svg" alt="icon" />
-        <p>Reply</p>
+  <div class="chat" v-for="reply in replies" :key="reply.id">
+    <div class="chat__details">
+      <profile :user="reply.user" />
+      <p class="content-text">{{ reply.content }}</p>
+    </div>
+    <div class="chat__buttons">
+      <counter :count="reply.score" />
+      <div class="desktop__btn__wrapper-mobile">
+        <c-button
+          v-if="reply.user.username !== currentUser.username"
+          variant="secondary"
+          class="button__mobile"
+          reply
+          >Reply</c-button
+        >
+        <div
+          class="reply__delete--btns-mobile"
+          v-if="reply.user.username === currentUser.username"
+        >
+          <c-button variant="secondary" class="button__mobile" deleteIcon
+            >Delete</c-button
+          >
+          <c-button variant="secondary" class="button__mobile" edit-btn editIcon
+            >Edit</c-button
+          >
+        </div>
       </div>
     </div>
-    <div class="chat__box--content">
-      <div class="chat__box--content-info">
-        <div class="profile-wrapper">
-          <div class="profile-picture">
-            <img :src="reply.user.image.png" alt="icon" class="image" />
-          </div>
-          <p class="name">{{ reply.user.username }}</p>
-          <p class="period">{{ reply.createdAt }}</p>
-        </div>
-        <button class="reply">
-          <img src="@/assets/images/icon-reply.svg" alt="icon" />
-          Reply
-        </button>
-      </div>
-      <div class="chat__box--content-message">
-        <p>
-          <span>@{{ reply.replyingTo }}</span> {{ reply.content }}
-        </p>
+    <div class="desktop__btn__wrapper">
+      <c-button
+        v-if="reply.user.username !== currentUser.username"
+        variant="secondary"
+        class="button__desktop"
+        reply
+        >Reply</c-button
+      >
+      <div
+        class="reply__delete--btns"
+        v-if="reply.user.username === currentUser.username"
+      >
+        <c-button
+          variant="secondary"
+          class="button__desktop delete-btn"
+          deleteIcon
+          >Delete</c-button
+        >
+        <c-button variant="secondary" class="button__desktop" edit-btn editIcon
+          >Edit</c-button
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// import { computed } from "vue";
+// import { useStore } from "vuex";
+import Profile from "./Profile.vue";
+import Counter from "./Counter.vue";
+import CButton from "./Button.vue";
 export default {
-  name: "Replies",
+  components: {
+    Profile,
+    Counter,
+    CButton,
+  },
   props: {
     replies: {
       type: Array,
     },
-  },
-  methods: {
-    increaseCount(id) {
-      const initial = this.replies.find((item) => {
-        item.id === id && item.score++;
-      });
-      return initial;
-    },
-    decreaseCount(id) {
-      const initial = this.replies.find((item) => {
-        item.id === id && item.score--;
-      });
-      return initial;
+    currentUser: {
+      type: Object,
     },
   },
+  // setup() {
+  //   const store = useStore();
+
+  //   store.dispatch("getCurrentUserAction");
+  //   const currentUser = computed(() => {
+  //     return store.state.currentUser;
+  //   });
+
+  //   return {
+  //     currentUser,
+  //   };
+  // },
+  data: () => ({}),
 };
 </script>
 
 <style lang="scss" scoped>
-.chat__box {
+.chat {
   width: 100%;
-  max-width: 655px;
-  // border: 1px solid red;
-  height: auto;
-  background: $very-light-grey;
-  border-radius: 6px;
-  padding: 24px;
-  display: grid;
-  // margin-bottom: 20px;
+  background: $white;
+  padding: 12px;
+  border-radius: 8px;
+  .content-text {
+    font-size: 16px;
+    color: $grayish-blue;
+  }
+  .desktop__btn__wrapper {
+    display: none;
+  }
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+  }
+  .desktop__btn__wrapper-mobile {
+    display: flex;
+  }
+  .reply__delete--btns-mobile {
+    display: flex;
+  }
   @media screen and (min-width: 768px) {
     display: grid;
     grid: 1fr / max-content auto;
-    grid-gap: 24px;
-  }
-  &--counter {
-    grid-row: 2;
-    display: flex;
-    justify-content: space-between;
-    @media screen and (min-width: 768px) {
+    grid-gap: 20px;
+    position: relative;
+    .button__mobile {
+      display: none;
+    }
+    &__buttons {
       grid-row: 1;
+      margin-top: 0px;
     }
-    .reply-mobile {
-      display: grid;
-      grid: 1fr / repeat(2, max-content);
-      align-items: center;
-      grid-gap: 5px;
-      @media screen and (min-width: 768px) {
-        display: none;
-      }
-    }
-    &-item {
-      background: $light-grey;
+
+    .desktop__btn__wrapper {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      grid-gap: 15px;
-      width: max-content;
-      padding: 8px;
-      border-radius: 8px;
-      box-sizing: border-box;
-      margin-top: 10px;
-      @media screen and (min-width: 768px) {
-        flex-direction: column;
-        margin-top: 0;
-      }
-      .count {
-        font-size: 16px;
-        font-weight: 400;
-        color: $moderate-blue;
-      }
+      position: absolute;
+      right: 10px;
+      top: 10px;
     }
-  }
-  &--content {
-    &-info {
+    .reply__delete--btns {
       display: flex;
-      justify-content: space-between;
-      .profile-wrapper {
-        display: grid;
-        grid: 1fr / repeat(3, max-content);
-        align-items: center;
-        grid-gap: 10px;
-      }
-      .profile-picture {
-        width: 32px;
-        height: 32px;
-        .image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .reply {
-        grid: 1fr / repeat(2, max-content);
-        align-items: center;
-        grid-gap: 5px;
-        display: none;
-        border: none;
-        cursor: pointer;
-        background: transparent;
-        color: $moderate-blue;
-        @media screen and (min-width: 768px) {
-          display: grid;
-        }
-      }
-      .name {
-        font-size: 16px;
-        color: $dark-blue;
-      }
-      .period {
-        font-size: 16px;
-        color: $grayish-blue;
-        font-weight: 400;
-      }
     }
-    &-message {
-      margin-top: 10px;
-      p {
-        color: $grayish-blue;
-        font-size: 16px;
-        span {
-          color: $moderate-blue;
-        }
-      }
+    .desktop__btn__wrapper-mobile {
+      display: none;
     }
   }
 }

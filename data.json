@@ -63,46 +63,6 @@
           }
         }
       ]
-    },
-    {
-      "content": "@All dsgfbsajfhsa,jbdacmsnbcasmnab,s",
-      "createdAt": "half a minute",
-      "score": 0,
-      "replies": [],
-      "user": {
-        "image": {
-          "png": ""
-        }
-      },
-      "id": 3
-    },
-    {
-      "content": "@amyrobson  I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the,Woah, your project looks awesome! ",
-      "createdAt": "less than a minute",
-      "score": 0,
-      "replies": [],
-      "user": {
-        "image": {
-          "png": "https://res.cloudinary.com/androcloudinary/image/upload/v1649672455/myProject/image-juliusomo_t4btem.png",
-          "webp": "https://res.cloudinary.com/androcloudinary/image/upload/v1649672455/myProject/image-juliusomo_jsqge2.webp"
-        },
-        "username": "juliusomo"
-      },
-      "id": 4
-    },
-    {
-      "content": "cjdhkcscbhjscbshcjbS",
-      "createdAt": "less than 20 seconds",
-      "score": 0,
-      "replies": [],
-      "user": {
-        "image": {
-          "png": "https://res.cloudinary.com/androcloudinary/image/upload/v1649672455/myProject/image-juliusomo_t4btem.png",
-          "webp": "https://res.cloudinary.com/androcloudinary/image/upload/v1649672455/myProject/image-juliusomo_jsqge2.webp"
-        },
-        "username": "juliusomo"
-      },
-      "id": 5
     }
   ]
 }

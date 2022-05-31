@@ -1,136 +1,127 @@
 <template>
-  <div class="reply" v-if="isOpen">
-    <div class="reply__box">
-      <div class="profile-picture">
-        <img :src="currentUser.image.png" alt="icon" class="image" />
-        <button class="reply__btn mobile" @click="$emit('reply', createdReply)">
-          REPLY
-        </button>
+  <div class="reply">
+    <div class="reply__content">
+      <div class="reply__content-image">
+        <img :src="currentUser.image" alt="" />
       </div>
-      <textarea
-        type="text"
-        v-model="replyMessage.content"
-        class="message-box"
-      />
-      <button class="reply__btn" @click="$emit('reply', createdReply)">
-        REPLY
-      </button>
+      <c-comment class="comment-component" v-model="content"></c-comment>
+      <c-button @press="sendComment" class="btn" type="button">{{ btnType }}</c-button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { db } from "../firebase/db";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import CButton from "./Button.vue";
+import CComment from "./CommentBox.vue";
 export default {
-  name: "reply",
+  components: { CButton, CComment },
   props: {
-    currentUser: {
-      type: Object,
+    btnType: {
+      type: String,
+      default: "SEND",
     },
-    open: {
-      type: Boolean,
-    },
-    target: {
-      type: Boolean,
-    },
-    // message: {
-    //   type: Object,
-    // },
+  },
+  computed: {
+    ...mapGetters({
+      currentUser: "getCurrentUser",
+    }),
   },
   data: () => ({
-    replyMessage: {
-      content: "",
-      createdAt: new Date(),
-      score: "0",
-      replyingTo: "",
-      user: {
-        image: {
-          png: "",
-        },
-        username: "",
-      },
-    },
+    content: "",
   }),
-  computed: {
-    isOpen() {
-      return this.open || false;
+  methods: {
+    formatDate(value) {
+      if (!value) return "-";
+      const distance = formatDistanceToNow(value, {
+        addSuffix: true,
+      }).replace("about ", "");
+      return `${distance}`;
     },
-    istarget() {
-      return this.target || false;
-    },
-    createdReply() {
-      const { replyMessage } = this;
-      return replyMessage;
+    async sendComment() {
+      const { currentUser } = this;
+      const { image, username } = currentUser;
+      const newDate = this.formatDate(new Date());
+      const date = firebase.firestore.Timestamp.fromDate(new Date());
+      console.log(date);
+      const database = await db.collection("comments").doc();
+      const { id } = database;
+      await database
+        .set({
+          id: id,
+          content: this.content,
+          date: date,
+          user: {
+            image: image,
+            username: username,
+          },
+          createdAt: newDate,
+          score: 0,
+          replies: [],
+        })
+        .then(() => {
+          console.log("Document successfully written!");
+        });
+      this.content = "";
+      this.$store.dispatch("getCommentsAction");
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.reply__box {
-  width: 100%;
-  height: auto;
-  background: $very-light-grey;
-  border-radius: 6px;
-  padding: 24px;
+.reply {
   display: grid;
-  margin: 20px 0;
-  // border: 1px solid red;
-  @media screen and (min-width: 768px) {
-    display: grid;
-    grid: 1fr / max-content auto max-content;
-    grid-gap: 24px;
-  }
-  .profile-picture {
-    grid-row: 2;
+  grid-gap: 14px;
+  background: $white;
+  padding: 12px;
+  border-radius: 8px;
+  .comment-component {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    .image {
-      width: 32px;
-      height: 32px;
-    }
-    @media screen and (min-width: 768px) {
-      grid-row: 1;
-      margin-top: 0;
+  }
+  .comment-component-mobile {
+    display: flex;
+  }
+  &__content {
+    display: flex;
+    flex-direction: column-reverse;
+    position: relative;
+    grid-gap: 14px;
+    &-image {
+      width: 34px;
+      height: 34px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
-  .message-box {
-    border: 1px solid $moderate-blue;
-    border-radius: 6px;
-    background: transparent;
-    width: 100%;
-    padding: 10px 24px;
-    color: $grayish-blue;
-    font-size: 16px;
-    font-weight: 400;
-    height: 90px;
-    @media screen and (min-width: 768px) {
-    }
+  .btn {
+    position: absolute;
+    right: 0;
   }
-  .reply__btn {
-    background: $moderate-blue;
-    color: $white;
-    border: none;
-    border-radius: 6px;
-    padding: 0 10px;
-    height: 30px;
-    display: none;
-    cursor: pointer;
-    &:hover {
-      opacity: 0.6;
+  @media screen and (min-width: 768px) {
+    .comment-component {
+      display: grid;
+      width: 82%;
     }
-    @media screen and (min-width: 768px) {
-      display: block;
-    }
-  }
-  .mobile {
-    display: block;
-    @media screen and (min-width: 768px) {
+    .comment-component-mobile {
       display: none;
     }
+    &__content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn {
+      position: relative;
+      right: 0px;
+    }
   }
-}
-*:focus {
-  outline: none;
 }
 </style>
