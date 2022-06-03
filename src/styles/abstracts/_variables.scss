@@ -1,0 +1,23 @@
+$black: #000 !default;
+$white: #FFF;
+$moderate-blue: hsl(238, 40%, 52%) !default;
+$soft-red: hsl(358, 79%, 66%) !default;
+$light-grayish-blue: hsl(239, 57%, 85%) !default;
+$pale-red: hsl(357, 100%, 86%) !default;
+$dark-blue: hsl(212, 24%, 26%) !default;
+$grayish-blue: hsl(211, 10%, 45%) !default;
+$light-grey: hsl(223, 19%, 93%) !default;
+$very-light-grey: hsl(228, 33%, 97%) !default;
+
+$colors: (
+  black: $black,
+  white: $white,
+  moderate-blue: $moderate-blue,
+  soft-red: $soft-red,
+  light-grayish-blue: $light-grayish-blue,
+  pale-red: $pale-red,
+  dark-blue: $dark-blue,
+  grayish-blue: $grayish-blue,
+  light-grey: $light-grey,
+  very-light-grey: $very-light-grey,
+);
