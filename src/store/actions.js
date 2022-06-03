@@ -3,7 +3,6 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 
 export const getCommentsAction = async ({ state }) => {
-  state.loading = true;
   const dataBase = await db.collection("comments").orderBy("date", "asc");
   const result = await dataBase.get();
   await result.forEach((e) => {
@@ -20,7 +19,6 @@ export const getCommentsAction = async ({ state }) => {
       state.comments.push(data);
     }
   });
-  state.loading = false;
 };
 
 export const deleteCommentAction = async ({ state }, id) => {
@@ -92,7 +90,6 @@ export const updateScoreAction = async (
 
 export const editCommentAction = async ({ state }, { id, content }) => {
   const dataBase = await db.collection("comments").doc(id);
-  console.log(content, id);
   await dataBase.update({ content }).catch((error) => {
     console.error("Error updating document: ", error);
   });

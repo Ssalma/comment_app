@@ -84,6 +84,7 @@ export default {
     background: transparent;
     width: 20px;
     height: 15px;
+    cursor: pointer;
   }
   @media screen and (min-width: 768px) {
     display: flex;

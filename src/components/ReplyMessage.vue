@@ -5,6 +5,9 @@
         <img :src="currentUser.image" alt="" />
       </div>
       <c-comment class="comment-component" v-model="content"></c-comment>
+      <div class="image-btn" @click="closeReply">
+        <img src="@/assets/images/close.svg" alt="" />
+      </div>
       <c-button
         @press="sendReply"
         class="btn"
@@ -47,6 +50,9 @@ export default {
     async sendReply() {
       this.$emit("sendReplyMessage", this.content);
     },
+    closeReply() {
+      this.$emit("close");
+    },
   },
 };
 </script>
@@ -82,6 +88,12 @@ export default {
   .btn {
     position: absolute;
     right: 0;
+  }
+  .image-btn {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
   }
   @media screen and (min-width: 768px) {
     .comment-component {

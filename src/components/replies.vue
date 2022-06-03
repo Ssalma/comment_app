@@ -80,6 +80,7 @@
       <c-reply-message
         @sendReplyMessage="(val) => editReplyMessage(val, reply.id)"
         :btnType="update"
+        @close="closeReply"
       ></c-reply-message>
     </div>
     <div v-if="replyTo === reply.id" style="margin-top: 10px">
@@ -87,6 +88,7 @@
         @sendReplyMessage="(val) => sendReplyMessage(val)"
         btnType="Reply"
         :btnLoading="btnLoading"
+        @close="closeReply"
       ></c-reply-message>
     </div>
     <c-modal
@@ -147,6 +149,10 @@ export default {
     },
     closeDeleteModal() {
       this.showDelModal = !this.showDelModal;
+    },
+    closeReply() {
+      this.replyTo = !this.replyTo;
+      this.editReply = !this.editReply;
     },
     editReplyMessage(val, replyId) {
       this.$store.dispatch("editReplyAction", {

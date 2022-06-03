@@ -83,6 +83,7 @@
         <c-reply-message
           @sendReplyMessage="(val) => editMessage(val, comment.id)"
           :btnType="editMsg === comment.id ? update : Reply"
+          @close="closeReply"
         ></c-reply-message>
       </div>
       <div v-if="replyTo === comment.id">
@@ -90,6 +91,7 @@
           @sendReplyMessage="(val) => sendReplyMessage(val, comment.id)"
           btnType="Reply"
           :btnLoading="loading"
+          @close="closeReply"
         ></c-reply-message>
       </div>
       <div class="replies" v-if="comment.replies.length !== 0">
@@ -159,6 +161,10 @@ export default {
     }),
     closeDeleteModal() {
       this.delMsg = !this.delMsg;
+    },
+    closeReply() {
+      this.replyTo = !this.replyTo;
+      this.editMsg = !this.editMsg;
     },
     deleteMessage() {
       const { currentId } = this;
