@@ -7,6 +7,8 @@ const state = {
   comments: [],
   currentUser: {},
   postLoaded: null,
+  loading: false,
+  btnLoading: false,
 };
 
 export default createStore({

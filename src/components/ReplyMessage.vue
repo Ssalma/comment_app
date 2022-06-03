@@ -6,7 +6,7 @@
       </div>
       <c-comment class="comment-component" v-model="content"></c-comment>
       <c-button
-        @press="sendComment"
+        @press="sendReply"
         class="btn"
         type="button"
         :loading="btnLoading"
@@ -18,10 +18,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { db } from "../firebase/db";
+// import { db } from "../firebase/db";
 // import firebase from "firebase/app";
-// import "firebase/firestore";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import "firebase/firestore";
 import CButton from "./Button.vue";
 import CComment from "./CommentBox.vue";
 export default {
@@ -31,6 +30,10 @@ export default {
       type: String,
       default: "SEND",
     },
+    btnLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters({
@@ -39,49 +42,10 @@ export default {
   },
   data: () => ({
     content: "",
-    btnLoading: false,
   }),
   methods: {
-    formatDate(value) {
-      if (!value) return "-";
-      const distance = formatDistanceToNow(value, {
-        addSuffix: true,
-      }).replace("about ", "");
-      return `${distance}`;
-    },
-    async sendComment() {
-      const { currentUser } = this;
-      const { image, username } = currentUser;
-      const newDate = this.formatDate(new Date());
-      const date = Date.now();
-      this.btnLoading = true;
-      const database = await db.collection("comments").doc();
-      const { id } = database;
-      this.content !== ""
-        ? await database
-            .set({
-              id: id,
-              content: this.content,
-              date: date,
-              user: {
-                image: image,
-                username: username,
-              },
-              createdAt: newDate,
-              score: 0,
-              replies: [],
-            })
-            .then(() => {
-              this.content = "";
-              this.btnLoading = false;
-            })
-            .catch((error) => {
-              console.error("Error writing document: ", error);
-            })
-        : window.alert("Please enter a comment");
-      this.btnLoading = false;
-      this.content = "";
-      this.$store.dispatch("getCommentsAction");
+    async sendReply() {
+      this.$emit("sendReplyMessage", this.content);
     },
   },
 };
@@ -94,6 +58,7 @@ export default {
   background: $white;
   padding: 12px;
   border-radius: 8px;
+  margin-bottom: 12px;
   .comment-component {
     display: flex;
   }

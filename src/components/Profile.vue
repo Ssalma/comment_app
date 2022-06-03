@@ -4,11 +4,12 @@
       <img :src="user.image" alt="" />
     </div>
     <p class="username">{{ user.username }}</p>
-    <p class="date">{{ user.createdAt }}</p>
+    <p class="date">{{ formatDate }}</p>
   </div>
 </template>
 
 <script>
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 export default {
   props: {
     user: {
@@ -16,6 +17,16 @@ export default {
     },
   },
   data: () => ({}),
+  computed: {
+    formatDate() {
+      const { date } = this.user;
+      if (!date) return "";
+      const distance = formatDistanceToNow(date, {
+        addSuffix: true,
+      }).replace("about ", "");
+      return `${distance}`;
+    },
+  },
 };
 </script>
 

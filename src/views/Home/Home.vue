@@ -2,7 +2,9 @@
   <div class="comment__app">
     <div class="comment__app-content">
       <c-message-board />
-      <c-reply />
+      <div class="reply">
+        <c-reply />
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +32,9 @@ export default {
     width: 100%;
     margin: auto;
     // background: $white;
+  }
+  .reply {
+    margin-top: 10px;
   }
   @media screen and (min-width: 786px) {
     width: 100%;
